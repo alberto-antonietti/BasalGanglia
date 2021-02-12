@@ -1,0 +1,36 @@
+# Create a new Python Kernel to be used (for_snudda)
+
+# 1. Open a Terminal and create a virtual environment
+# NOTE! Virtualenv can be created only in /opt/app-root/src
+cd /opt/app-root/src
+unset PYTHONPATH
+virtualenv for_snudda
+
+# 2. Activate the environment
+source /opt/app-root/src/for_snudda/bin/activate
+
+# You will see a (for-snudda)$ at the beginning of the terminal line.
+
+# 3. Install NEURON
+pip install pip --upgrade
+pip install neuron --upgrade
+
+# 4. Fix the version of h5py, because snudda works with 2.10.0
+pip uninstall h5py
+pip install h5py==2.10.0
+pip install zmq
+
+# 5. Install Snudda (do not clone again, just use the current folder that is alreeady in the correct branch)
+cd "/opt/app-root/src/drive/Shared with groups/BasalGanglia-Reproducible/Snudda"
+pip3 install --upgrade -e .[dev]
+
+# 6. Install jupyter in the virtualenv
+pip install jupyter
+
+# 7. Add the virtualenv as a jupyter kernel
+ipython kernel install --name "for_snudda" --user
+
+# 8. You can now select the created kernel your-env when you start Jupyter
+
+# OTHER NOTES. Snudda can give an error when running simulate. In that case comment line 731 of snudda/core.py
+#os.symlink(mDir,mechDir)
