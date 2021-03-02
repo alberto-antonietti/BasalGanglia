@@ -32,5 +32,8 @@ ipython kernel install --name "for_snudda" --user
 
 # 8. You can now select the created kernel your-env when you start Jupyter
 
+# 9. Install utilities
+pip install glances
+
 # OTHER NOTES. Snudda can give an error when running simulate. In that case comment line 731 of snudda/core.py
 #os.symlink(mDir,mechDir)
