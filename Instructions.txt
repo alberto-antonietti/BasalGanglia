@@ -35,5 +35,9 @@ ipython kernel install --name "for_snudda" --user
 # 9. Install utilities
 pip install glances
 
+#(for the interactive graphics)
+pip install ipywidgets
+pip install ipympl==0.5.6
+
 # OTHER NOTES. Snudda can give an error when running simulate. In that case comment line 731 of snudda/core.py
 #os.symlink(mDir,mechDir)
