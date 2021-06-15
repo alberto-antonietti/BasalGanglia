@@ -14,7 +14,7 @@ def getNeuronMatrix(folder):
     ie. neuron_matrix[0][0]= 0  and  neuron_matrix[0][1] = "dspn
     "means that the neuron with neuron_ID=0 is a dspn '''
     
-    path = folder + '/network-neuron-positions.hdf5'
+    path = '/home/ubuntu/BasalGanglia' + folder + '/network-neuron-positions.hdf5'
     
     with h5py.File(path, 'r') as hdf5:
         neurons = (hdf5.get('network')).get('neurons')

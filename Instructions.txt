@@ -1,3 +1,40 @@
+
+
+# 1. To check the progress of running notebooks: use 'glances' at terminal
+# if NEURON command is running -> you can check the progress @ Snudda/networks/FOLDER_NAME/log
+# (in case glances is unistalled, just run : pip install glances)
+
+# 2. Internet connection (needed only to use git push to master)
+#if it is not working do:
+sudo nano /etc/resolv.conf
+# ADD on the file
+nameserver 8.8.4.4
+nameserver 8.8.8.8
+Ctrl X exit (Y for changes)
+
+
+# 3. Commiting changes to the Github:
+
+(cd to the basal ganglia folder)
+git status to check the changes
+git add for each new/modified file you want to add 
+(or git add . to include all)
+git commit - m "comment" 
+give email e user
+git push master origin 
+type password
+
+
+# 4. Converting .ipynb files into .py ones
+jupyter nbconvert --to script FILENAME.ipynb 
+
+# 5.For the interactive graphics (in case they stop working/are uninstalled)
+pip install ipywidgets
+pip install ipympl==0.5.6
+
+
+
+------------------------------------------- EBRAINS PLATFORM INSTRUCTIONS ----------------------------------------------
 # Create a new Python Kernel to be used (for_snudda)
 
 # 1. Open a Terminal and create a virtual environment
