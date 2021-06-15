@@ -5,12 +5,17 @@
 # (in case glances is unistalled, just run : pip install glances)
 
 # 2. Internet connection (needed only to use git push to master)
+#test connection : see if it downloads this image by running this command:
+wget https://fenix-ri.eu/sites/default/files/public/home/fenix-logo.svg
+# if it does, it is connected
+# if it says "unable to resolve" - it is not connected
+
 #if it is not working do:
 sudo nano /etc/resolv.conf
 # ADD on the file
 nameserver 8.8.4.4
 nameserver 8.8.8.8
-Ctrl X exit (Y for changes)
+Ctrl X exit (Y for changes) ENTER again to mantain file name
 
 
 # 3. Commiting changes to the Github:
@@ -21,7 +26,7 @@ git add for each new/modified file you want to add
 (or git add . to include all)
 git commit - m "comment" 
 give email e user
-git push master origin 
+git push origin master 
 type password
 
 
