@@ -34,7 +34,7 @@ def getNeuronMatrix(folder):
 
 def getNeuronSubMatrixes(matrix):
     '''Given the neuron matrix, returns 1 array for each neuron type, with the neuron_IDs of neurons of this type
-    Assumes there are only the 5 neuron types we see in the example (ispn, dpsn, lts chin and fs)
+    Assumes there are only the 5 neuron types we see in the example (dspn, ipsn, lts chin and fs)
      '''
     
     dspn = []
@@ -68,7 +68,7 @@ def getSpikes(file_path):
      on each network folder
     '''
         
-    with open('Snudda/networks/tinySim/simulation/network-output-spikes-666.txt', 'r') as file:
+    with open(path, 'r') as file:
         lines = file.readlines()
 
     spikes = {}
@@ -85,6 +85,11 @@ def getSpikes(file_path):
     return(spikes)
 
 def getSubSpikes(spikes, matrix):
+    ''' Receives the spike dict(with the IDs and times of spike) and neuron matrix(with IDs and neuron type), checks the type
+        of each spiking neuron and adds the event into a dictionary for the specific type. The output are 5 dicts, each containing
+        the IDs and spike times of one type of neuron (dspn, ipsn, lts chin and fs)
+    
+    '''
     
     dspn_spikes = {}
     ispn_spikes = {}
@@ -119,7 +124,7 @@ def getSubSpikes(spikes, matrix):
                 chin_spikes[key] = []            
             chin_spikes[key].extend(spikes[key])
 
-    return(dspn_spikes)
+    return(dspn_spikes, ispn_spikes, lts_spikes, fs_spikes, chin_spikes)
 
 def getVolts(file_path):
     
