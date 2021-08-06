@@ -1,5 +1,3 @@
-
-
 # 1. To check the progress of running notebooks: use 'glances' at terminal
 # if NEURON command is running -> you can check the progress @ Snudda/networks/FOLDER_NAME/log
 # (in case glances is unistalled, just run : pip install glances)

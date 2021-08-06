@@ -1,3 +1,6 @@
+# Heavy data files are being stored on a drive
+NEURON-data/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
