@@ -96,3 +96,19 @@ def plotTraces(voltage_matrix,time,neuron_submatrix,mode,spike_dict = None):
     
     return()
 
+def plot_spikes(color, pop_range, label, ax):
+    global n_ids
+    label_done = False
+    for i in n_ids:
+        if i in pop_range: #here is the separation of diff neuron types by color
+        #i have to check if on my network the neurons are also grouped, so each 
+        #type is just an interval of n_id
+            spikes = events[i] #array of the spike times of neuron i
+            if not label_done:
+                ax.plot(spikes, np.full_like(spikes, i), marker=".", label=label, color=color, linestyle="None")
+                #this full_like function generates an array that has the same
+                #size as events[i], with the value i on every position (so we
+                #have the same number of x and ys for plotting)
+                label_done = True
+            else:
+                ax.plot(spikes, np.full_like(spikes, i), marker=".", color=color, linestyle="None")

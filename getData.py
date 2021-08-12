@@ -57,7 +57,7 @@ def getNeuronSubMatrixes(matrix):
 
     return(dspn, ispn, lts, fs, chin)
 
-def getSpikes(file_path):
+def getSpikes(path):
     
     '''
     Given the path to a spike .txt archive, copies the information onto a dictionary
