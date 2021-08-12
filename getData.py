@@ -126,6 +126,54 @@ def getSubSpikes(spikes, matrix):
 
     return(dspn_spikes, ispn_spikes, lts_spikes, fs_spikes, chin_spikes)
 
+def getSubSpikesIDS(spikes, matrix):
+    ''' Receives the spike dict(with the IDs and times of spike) and neuron matrix(with IDs and neuron type), checks the type
+        of each spiking neuron and creates an array with all the nIDs of spiking neurons, in the following order : ChIN, iSPN, LTS
+        dSPN, FS.    
+    '''
+    sorted_ids = []
+    
+    #AQUI SERIA O SORTED IDs só dos que SPIKED. PQ A GNT PARTE DO DICIONARIO
+    for key in spikes.keys():
+        
+        if matrix[key][1] == "dspn":
+            if(key not in dspn_spikes.keys()):
+                dspn_spikes[key] = []            
+            dspn_spikes[key].extend(spikes[key])
+            
+        elif matrix[key][1] == "ispn":
+            if(key not in ispn_spikes.keys()):
+                ispn_spikes[key] = []            
+            ispn_spikes[key].extend(spikes[key])
+            
+        elif matrix[key][1] == "lts":
+            if(key not in lts_spikes.keys()):
+                lts_spikes[key] = []            
+            lts_spikes[key].extend(spikes[key])
+            
+        elif matrix[key][1] == "fs":
+            if(key not in fs_spikes.keys()):
+                fs_spikes[key] = []            
+            fs_spikes[key].extend(spikes[key])
+            
+        elif matrix[key][1] == "chin":
+            if(key not in chin_spikes.keys()):
+                chin_spikes[key] = []            
+            chin_spikes[key].extend(spikes[key])
+
+    return(dspn_spikes, ispn_spikes, lts_spikes, fs_spikes, chin_spikes)
+
+
+def getSortedIDList(matrix):
+    ''' Receives the neuron matrix(with IDs and neuron type), divides it into 5 arrays, one for each type of neuron, and reunites
+        all IDs stacked in the following order : ChIN, iSPN, LTS  dSPN, FS.
+    '''
+    dspn, ispn, lts, fs, chin = getNeuronSubMatrixes(matrix)
+    sorted_ids = []
+    sorted_ids = chin + ispn + lts + dspn + fs
+    
+    return(sorted_ids)
+
 def getVolts(file_path):
     
     '''
