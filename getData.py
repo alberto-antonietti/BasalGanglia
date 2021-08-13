@@ -14,7 +14,7 @@ def getNeuronMatrix(folder):
     ie. neuron_matrix[0][0]= 0  and  neuron_matrix[0][1] = "dspn
     "means that the neuron with neuron_ID=0 is a dspn '''
     
-    path = '/home/ubuntu/BasalGanglia' + folder + '/network-neuron-positions.hdf5'
+    path = folder + '/network-neuron-positions.hdf5'
     
     with h5py.File(path, 'r') as hdf5:
         neurons = (hdf5.get('network')).get('neurons')
@@ -57,10 +57,10 @@ def getNeuronSubMatrixes(matrix):
 
     return(dspn, ispn, lts, fs, chin)
 
-def getSpikes(path):
+def getSpikes(path, size):
     
     '''
-    Given the path to a spike .txt archive, copies the information onto a dictionary
+    Given the path to a spike .txt archive and the size of the network, copies the information onto a dictionary
     The keys are the IDs of each of the spiking neurons, and the corresponding value is an array
     with that neuron's spike times (in ns)
     
@@ -68,7 +68,7 @@ def getSpikes(path):
      on each network folder
     '''
         
-    with open(path, 'r') as file:
+    with open(path  + '/spikes_2s.txt', 'r') as file:
         lines = file.readlines()
 
     spikes = {}
@@ -81,6 +81,10 @@ def getSpikes(path):
         if(nID not in spikes.keys()):
             spikes[nID] = []            
         spikes[nID].append(spike_time)
+    
+    for i in range(0, size):
+        if(i not in spikes.keys()):
+            spikes[i] = []
             
     return(spikes)
 

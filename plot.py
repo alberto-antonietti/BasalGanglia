@@ -96,7 +96,7 @@ def plotTraces(voltage_matrix,time,neuron_submatrix,mode,spike_dict = None):
     
     return()
 
-def plot_spikes(color, pop_range, label, ax):
+'''def plot_spikes(color, pop_range, label, ax):
     global n_ids
     label_done = False
     for i in n_ids:
@@ -111,4 +111,4 @@ def plot_spikes(color, pop_range, label, ax):
                 #have the same number of x and ys for plotting)
                 label_done = True
             else:
-                ax.plot(spikes, np.full_like(spikes, i), marker=".", color=color, linestyle="None")
+                ax.plot(spikes, np.full_like(spikes, i), marker=".", color=color, linestyle="None")'''
