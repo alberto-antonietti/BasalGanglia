@@ -1,7 +1,7 @@
-#!/usr/bin/env python
-# coding: utf-8
+####
+####
+####
 
-# In[1]:
 
 import numpy as np
 import h5py
@@ -189,7 +189,7 @@ def getVolts(file_path):
      on each network folder
     '''
         
-    with open(file_path, 'r') as file:
+    with open(file_path + '/volt_2s.txt', 'r') as file:
         volt = file.readlines()
 
     time = np.array(volt[0].split(","),float)
