@@ -1,6 +1,3 @@
-###
-####
-###
 
 import pandas as pd
 import matplotlib
@@ -8,6 +5,12 @@ import random
 from ipywidgets import *
 import matplotlib.pyplot as plt
 from getData import *
+
+chin_color='xkcd:dark blue'
+ispn_color='xkcd:sky blue'
+lts_color='xkcd:violet'
+dspn_color='xkcd:pink'
+fs_color='xkcd:hot pink'
 
 def plotNeuronalDistribution(folder_path):
     '''
@@ -27,10 +30,10 @@ def plotNeuronalDistribution(folder_path):
     fig = plt.figure()
 
     ax = fig.add_subplot(1,4,1) # 2,1,1 means: 2:two rows, 1: one column, 1: first plot
-    graph_1 = df.mask(cond,'Interneurons')['neuron_type'].value_counts().plot(kind='pie',autopct='%1.1f%%', radius=2)
+    graph_1 = df.mask(cond,'Interneurons')['neuron_type'].value_counts().plot(kind='pie',autopct='%1.1f%%', radius=2, colors = [dspn_color, ispn_color, 'xkcd:grey'])
 
     ax2 = fig.add_subplot(1,4,4) # 2,1,2 means: 2:two rows, 1: one column, 1: second plot
-    graph_2 = df_interneurons['neuron_type'].value_counts().plot(kind='pie',autopct='%1.1f%%', radius = 2)
+    graph_2 = df_interneurons['neuron_type'].value_counts().plot(kind='pie',autopct='%1.1f%%', radius = 2, colors = [fs_color, chin_color, lts_color])
 
 def plotTraces(folder_path, mode, spike_dict = None):
     '''
@@ -50,25 +53,26 @@ def plotTraces(folder_path, mode, spike_dict = None):
     
     dspn_ID, ispn_ID, lts_ID, fs_ID, chin_ID = getNeuronSubMatrixes(neuron_matrix)
     submatrixes = [dspn_ID, ispn_ID, lts_ID, fs_ID, chin_ID]
+    colors = [dspn_color, ispn_color, lts_color, fs_color, chin_color]
     
-    for x in submatrixes:
+    for i in range(0, len(submatrixes)):
 
         if mode=='R' :
 
-            if len(x)<5: #if there are less than 5 neurons available, we plot them all.
+            if len(submatrixes[i])<5: #if there are less than 5 neurons available, we plot them all.
                 plt.figure()
-                for i in range(0, len(x)):
-                    plt.plot(time, voltage_matrix[x[i]])
+                for j in range(0, len(submatrixes[i])):
+                    plt.plot(time, voltage_matrix[submatrixes[i][j]], color = colors[i])
                 plt.show()
 
             else:
                 #in case there are at least 5 neurons
-                random_IDs = random.sample(x, 5)  #we ramdomly select 5 values from the neuron_submatrix
+                random_IDs = random.sample(submatrixes[i], 5)  #we ramdomly select 5 values from the neuron_submatrix
 
                 print("Plotting the traces of the following neurons : ", random_IDs)
                 plt.figure()
-                for i in range(0,5):
-                    plt.plot(time, voltage_matrix[random_IDs[i]])
+                for j in range(0,5):
+                    plt.plot(time, voltage_matrix[random_IDs[j]], color = colors[i])
                 plt.show()
 
 
@@ -101,5 +105,53 @@ def plotTraces(folder_path, mode, spike_dict = None):
                     plt.show() 
     
     return()
+
+def plotSpikes(events, id_array, raster_order, color, label, ax):
+    
+    label_done = False
+    
+    for neuron_id in id_array:
+        
+        spikes = events[neuron_id] #array of the spike times of neuron i
+        
+        index = raster_order.index(neuron_id)
+        if not label_done:
+            ax.plot(spikes, np.full_like(spikes, index), ms = 2, marker=".", label=label, color=color, linestyle="None")
+            #this full_like function generates an array that has the same size as events[i], with the value index
+            #on every position (so we #have the same number of x and ys for plotting)
+            label_done = True
+        else:
+            ax.plot(spikes, np.full_like(spikes, index), ms = 2, marker=".", color=color, linestyle="None")
+    return();
+
+
+def plotRaster(folder_path, size):
+    ''' Given a path to a folder inside NEURON-data, generates the raster plot for the corresponding simulation
+        (folder_path is "NEURON-data/net_X" )
+    '''    
+    spikes_dict = getSpikes(folder_path, size)
+    
+    n_ids = np.array(list(spikes_dict.keys()), dtype=int)
+    n_ids.sort() #organize the neurons by id
+
+    neuron_matrix = getNeuronMatrix(folder_path)
+    dspn_ID, ispn_ID, lts_ID, fs_ID, chin_ID = getNeuronSubMatrixes(neuron_matrix)
+    
+    orderedIDs = getOrderedIDs(dspn_ID, ispn_ID, lts_ID, fs_ID, chin_ID)
+
+
+    fig_handle = plt.figure()
+    ax = fig_handle.add_subplot(111)
+    ax.set_xlabel('$t$ (ms)')
+
+    plotSpikes(spikes_dict, fs_ID, orderedIDs, fs_color, 'fs', ax)
+    plotSpikes(spikes_dict, dspn_ID, orderedIDs,dspn_color, 'dspn', ax)
+    plotSpikes(spikes_dict, lts_ID, orderedIDs, lts_color, 'lts', ax)
+    plotSpikes(spikes_dict, ispn_ID, orderedIDs,ispn_color , 'ispn', ax)
+    plotSpikes(spikes_dict, chin_ID, orderedIDs, chin_color, 'chin', ax)
+
+
+    plt.legend()
+    plt.show()
 
 

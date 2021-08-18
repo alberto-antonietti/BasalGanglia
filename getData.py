@@ -1,7 +1,3 @@
-####
-####
-####
-
 
 import numpy as np
 import h5py
@@ -64,8 +60,7 @@ def getSpikes(path, size):
     The keys are the IDs of each of the spiking neurons, and the corresponding value is an array
     with that neuron's spike times (in ns)
     
-    Here I ask for the full path because there are multiple output files (for the diff simulation durations)
-     on each network folder
+
     '''
         
     with open(path  + '/spikes_2s.txt', 'r') as file:
@@ -130,53 +125,27 @@ def getSubSpikes(spikes, matrix):
 
     return(dspn_spikes, ispn_spikes, lts_spikes, fs_spikes, chin_spikes)
 
-def getSubSpikesIDS(spikes, matrix):
-    ''' Receives the spike dict(with the IDs and times of spike) and neuron matrix(with IDs and neuron type), checks the type
-        of each spiking neuron and creates an array with all the nIDs of spiking neurons, in the following order : ChIN, iSPN, LTS
-        dSPN, FS.    
-    '''
-    sorted_ids = []
+
+def  getOrderedIDs(dspn, ispn, lts, fs, chin):
     
-    #AQUI SERIA O SORTED IDs só dos que SPIKED. PQ A GNT PARTE DO DICIONARIO
-    for key in spikes.keys():
+    ordered_raster = []
+    
+    for fs_id in fs:
+        ordered_raster.append(fs_id)
+    
+    for dspn_id in dspn:
+        ordered_raster.append(dspn_id)
         
-        if matrix[key][1] == "dspn":
-            if(key not in dspn_spikes.keys()):
-                dspn_spikes[key] = []            
-            dspn_spikes[key].extend(spikes[key])
-            
-        elif matrix[key][1] == "ispn":
-            if(key not in ispn_spikes.keys()):
-                ispn_spikes[key] = []            
-            ispn_spikes[key].extend(spikes[key])
-            
-        elif matrix[key][1] == "lts":
-            if(key not in lts_spikes.keys()):
-                lts_spikes[key] = []            
-            lts_spikes[key].extend(spikes[key])
-            
-        elif matrix[key][1] == "fs":
-            if(key not in fs_spikes.keys()):
-                fs_spikes[key] = []            
-            fs_spikes[key].extend(spikes[key])
-            
-        elif matrix[key][1] == "chin":
-            if(key not in chin_spikes.keys()):
-                chin_spikes[key] = []            
-            chin_spikes[key].extend(spikes[key])
-
-    return(dspn_spikes, ispn_spikes, lts_spikes, fs_spikes, chin_spikes)
-
-
-def getSortedIDList(matrix):
-    ''' Receives the neuron matrix(with IDs and neuron type), divides it into 5 arrays, one for each type of neuron, and reunites
-        all IDs stacked in the following order : ChIN, iSPN, LTS  dSPN, FS.
-    '''
-    dspn, ispn, lts, fs, chin = getNeuronSubMatrixes(matrix)
-    sorted_ids = []
-    sorted_ids = chin + ispn + lts + dspn + fs
+    for lts_id in lts:
+        ordered_raster.append(lts_id)
     
-    return(sorted_ids)
+    for ispn_id in ispn:
+        ordered_raster.append(ispn_id)
+        
+    for chin_id in chin:
+        ordered_raster.append(chin_id)        
+    
+    return(ordered_raster)
 
 def getVolts(file_path):
     
