@@ -1,4 +1,3 @@
-
 import numpy as np
 import h5py
 
@@ -60,7 +59,6 @@ def getSpikes(path, size):
     The keys are the IDs of each of the spiking neurons, and the corresponding value is an array
     with that neuron's spike times (in ns)
     
-
     '''
         
     with open(path  + '/spikes_2s.txt', 'r') as file:
@@ -194,6 +192,24 @@ def removePath(ntype_array):
             new_ntype_array[i] = "chin"
         
     return(new_ntype_array)
+
+def getNeuronPositions(path):
+    
+    neuron_positions = []
+    
+    with h5py.File(path, 'r') as hdf5:
+
+        position = hdf5.get('network').get('neurons').get('position')
+
+        for i in range(0,len(position)):
+            single_neuron = []
+            for j in range(0, len(position[0])):
+                single_neuron.append(position[i][j])                    
+            neuron_positions.append(single_neuron)
+    
+    return(neuron_positions)
+
+
 
 def matrixTranspose(matrix):
     if not matrix: return ([])
