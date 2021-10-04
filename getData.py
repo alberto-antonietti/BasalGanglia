@@ -52,6 +52,96 @@ def getNeuronSubMatrixes(matrix):
 
     return(dspn, ispn, lts, fs, chin)
 
+
+def  getOrderedIDs(dspn, ispn, lts, fs, chin):
+    
+    ordered_raster = []
+    
+    for fs_id in fs:
+        ordered_raster.append(fs_id)
+    
+    for dspn_id in dspn:
+        ordered_raster.append(dspn_id)
+        
+    for lts_id in lts:
+        ordered_raster.append(lts_id)
+    
+    for ispn_id in ispn:
+        ordered_raster.append(ispn_id)
+        
+    for chin_id in chin:
+        ordered_raster.append(chin_id)        
+    
+    return(ordered_raster)
+
+def getNeuronPositions(net):
+    ''' Receives the network size: net_100, net_1000 or net_10000'''
+    
+    neuron_positions = []
+    
+    path = '/home/ubuntu/BasalGanglia/NEURON-data/' + net + '/network-neuron-positions.hdf5'
+
+    
+    with h5py.File(path, 'r') as hdf5:
+
+        position = hdf5.get('network').get('neurons').get('position')
+
+        for i in range(0,len(position)):
+            single_neuron = []
+            for j in range(0, len(position[0])):
+                single_neuron.append(position[i][j])                    
+            neuron_positions.append(single_neuron)
+    
+    return(neuron_positions)
+
+def getSynapses(net):
+    
+    path = '/home/ubuntu/BasalGanglia/NEURON-data/' + net + '/network-pruned-synapses.hdf5'
+    
+    with h5py.File(path, 'r') as file:
+        synapses = file.get('network').get('synapses')
+
+        synaptic_matrix = []
+        for i in range(0,len(synapses)):
+            synaptic_matrix.append([synapses[i][0], synapses[i][1]]) #Pre_ID | Pos_ID
+
+    return(synaptic_matrix) 
+
+def getInput(net, net_size):
+    
+    path = '/home/ubuntu/BasalGanglia/NEURON-data/' + net + '/input-spikes.hdf5'
+    
+    with h5py.File(path, 'r') as file:
+    
+        inputs = file.get('input')
+        input_matrix = []
+
+        for num in range(0, net_size-1):
+
+            neuronID = str(num)
+
+            neuron_i = inputs.get(neuronID)
+            input_neuron_i = []
+
+            source_list = list(neuron_i.keys())
+
+            for source in source_list:
+                spike_train = np.array(neuron_i.get(source).get('spikes'))
+
+                for line in spike_train:
+
+                    for spike_time in line:
+
+                        if (spike_time!=-1) and (spike_time*1000 > 0.05):
+                            input_neuron_i.append(spike_time*1000)
+
+            input_neuron_i.sort()
+            input_matrix.append(np.around(input_neuron_i, decimals = 1))
+            
+    return(input_matrix)
+
+
+
 def getSpikes(path, size):
     
     '''
@@ -123,28 +213,6 @@ def getSubSpikes(spikes, matrix):
 
     return(dspn_spikes, ispn_spikes, lts_spikes, fs_spikes, chin_spikes)
 
-
-def  getOrderedIDs(dspn, ispn, lts, fs, chin):
-    
-    ordered_raster = []
-    
-    for fs_id in fs:
-        ordered_raster.append(fs_id)
-    
-    for dspn_id in dspn:
-        ordered_raster.append(dspn_id)
-        
-    for lts_id in lts:
-        ordered_raster.append(lts_id)
-    
-    for ispn_id in ispn:
-        ordered_raster.append(ispn_id)
-        
-    for chin_id in chin:
-        ordered_raster.append(chin_id)        
-    
-    return(ordered_raster)
-
 def getVolts(file_path):
     
     '''
@@ -193,25 +261,9 @@ def removePath(ntype_array):
         
     return(new_ntype_array)
 
-def getNeuronPositions(path):
-    
-    neuron_positions = []
-    
-    with h5py.File(path, 'r') as hdf5:
-
-        position = hdf5.get('network').get('neurons').get('position')
-
-        for i in range(0,len(position)):
-            single_neuron = []
-            for j in range(0, len(position[0])):
-                single_neuron.append(position[i][j])                    
-            neuron_positions.append(single_neuron)
-    
-    return(neuron_positions)
-
-
-
 def matrixTranspose(matrix):
+    
     if not matrix: return ([])
+    
     return ([[row[i] for row in matrix] for i in range(len(matrix[0]))])
 
