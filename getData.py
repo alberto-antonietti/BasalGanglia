@@ -132,11 +132,11 @@ def getInput(net, net_size):
 
                     for spike_time in line:
 
-                        if (spike_time!=-1) and (spike_time*1000 > 0.05):
-                            input_neuron_i.append(spike_time*1000)
+                        if (spike_time!=-1):              
+                            input_neuron_i.append(np.ceil((spike_time*1000) * 10) / 10)
 
             input_neuron_i.sort()
-            input_matrix.append(np.around(input_neuron_i, decimals = 1))
+            input_matrix.append(input_neuron_i)
             
     return(input_matrix)
 
