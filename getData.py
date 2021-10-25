@@ -1,5 +1,7 @@
 import numpy as np
 import h5py
+import pandas as pd
+
 
 def getNeuronMatrix(folder):
     '''Given the path to a network folder 'Snudda/networks/XXXXX' where there is a 
@@ -105,7 +107,25 @@ def getSynapses(net):
         for i in range(0,len(synapses)):
             synaptic_matrix.append([synapses[i][0], synapses[i][1]]) #Pre_ID | Pos_ID
 
-    return(synaptic_matrix) 
+    return(synaptic_matrix)
+
+def getWeightedSynpses(pre_array, post_array):
+    
+    syn_matrix = []
+    
+    for i in range(0, len(pre_array)):
+        syn_matrix.append([pre_array[i], pos_array[i]])
+        
+    syn_df = pd.DataFrame(data= syn_matrix , columns=["source", "target"])
+
+    new = syn_df.groupby(['source', 'target']).size().reset_index()
+    wgt_syn_matrix = new.to_numpy()
+    print(wgt_syn_matrix)
+    sources = wgt_syn_matrix[:,0]
+    targets = wgt_syn_matrix[:,1]
+    weights = wgt_syn_matrix[:,2]
+    
+    return(sources, targets, weights)
 
 def getInput(net, net_size):
     
