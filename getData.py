@@ -114,7 +114,7 @@ def getWeightedSynpses(pre_array, post_array):
     syn_matrix = []
     
     for i in range(0, len(pre_array)):
-        syn_matrix.append([pre_array[i], pos_array[i]])
+        syn_matrix.append([pre_array[i], post_array[i]])
         
     syn_df = pd.DataFrame(data= syn_matrix , columns=["source", "target"])
 
@@ -125,7 +125,7 @@ def getWeightedSynpses(pre_array, post_array):
     targets = wgt_syn_matrix[:,1]
     weights = wgt_syn_matrix[:,2]
     
-    return(sources, targets, weights)
+    return(wgt_syn_matrix)
 
 def getInput(net, net_size):
     
