@@ -109,7 +109,7 @@ def getSynapses(net):
 
     return(synaptic_matrix)
 
-def getWeightedSynpses(pre_array, post_array):
+def old_getWeightedSynapses(pre_array, post_array):
     
     syn_matrix = []
     
@@ -126,6 +126,54 @@ def getWeightedSynpses(pre_array, post_array):
     weights = wgt_syn_matrix[:,2]
     
     return(wgt_syn_matrix)
+
+def getWeightedSynapses(pre_array, post_array, neuron_matrix):
+    
+    syn_matrix = []
+    
+    for i in range(0, len(pre_array)):
+        syn_matrix.append([pre_array[i], post_array[i]])
+        
+    syn_df = pd.DataFrame(data= syn_matrix , columns=["source", "target"])
+
+    grouped_syn_df = syn_df.groupby(['source', 'target']).size().reset_index()
+    summed_syn_matrix = grouped_syn_df.to_numpy()
+    
+    conductances = []
+    
+    for i in range(0,len(summed_syn_matrix)):
+
+        neuron_type = neuron_matrix[summed_syn_matrix[i][0]-1][1]
+
+        if (neuron_type == 'dspn' or neuron_type == 'ispn' ):
+            #"conductance": [2.4e-10, 1e-10]
+            cond = np.random.normal(2.4e-10,  1e-10, 1)
+
+            if(cond<2.4e-11): #capping at 10% of mean
+                cond = 2.4e-11
+                
+        elif (neuron_type == 'lts'):
+            # conductance mean = 3e-09, std deviation =  0
+            cond = 3e-09
+
+        elif (neuron_type == 'fs'):
+            #"conductance": [1.1e-09, 1.5e-09],
+            cond = np.random.normal(1.1e-09, 1.5e-09, 1)
+
+            if(cond<1.1e-10): #capping at 10% of mean
+                cond = 1.1e-10
+
+        conductances.append(cond)
+    
+    weights = []
+
+    for i in range(0, len(conductances)):
+        weights.append(-1*conductances[i]*summed_syn_matrix[i][2])
+
+    sources = summed_syn_matrix[:,0]
+    targets = summed_syn_matrix[:,1]
+    
+    return(sources, targets, weights)
 
 def getInput(net, net_size):
     
