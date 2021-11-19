@@ -3,15 +3,14 @@ import h5py
 import pandas as pd
 
 
-def getNeuronMatrix(folder):
-    '''Given the path to a network folder 'Snudda/networks/XXXXX' where there is a 
-    network-neuron-position.hdf5 file, returns a Matrix where the content of of the
+def getNeuronMatrix(net):
+    '''Given a network 'net_XXX', returns a Matrix where the content of of the
     first column is the neuron_ID and the content of the second column is the neuron 
     type.
     ie. neuron_matrix[0][0]= 0  and  neuron_matrix[0][1] = "dspn
     "means that the neuron with neuron_ID=0 is a dspn '''
     
-    path = folder + '/network-neuron-positions.hdf5'
+    path = '/home/ubuntu/BasalGanglia/NEURON-data/' + net + '/network-neuron-positions.hdf5'
     
     with h5py.File(path, 'r') as hdf5:
         neurons = (hdf5.get('network')).get('neurons')
@@ -210,16 +209,18 @@ def getInput(net, net_size):
 
 
 
-def getSpikes(path, size):
+def getSpikes(net, size):
     
     '''
-    Given the path to a spike .txt archive and the size of the network, copies the information onto a dictionary
+    Given a network 'net_XXX' and the size N of the network, copies the information of the spikes.txt file 
+    onto a dictionary
     The keys are the IDs of each of the spiking neurons, and the corresponding value is an array
     with that neuron's spike times (in ns)
     
     '''
+    file_path = '/home/ubuntu/BasalGanglia/NEURON-data/' + net + '/spikes.txt'
         
-    with open(path  + '/spikes_2s.txt', 'r') as file:
+    with open(file_path, 'r') as file:
         lines = file.readlines()
 
     spikes = {}
@@ -281,18 +282,21 @@ def getSubSpikes(spikes, matrix):
 
     return(dspn_spikes, ispn_spikes, lts_spikes, fs_spikes, chin_spikes)
 
-def getVolts(file_path):
+def getVolts(net):
     
     '''
-    Given the path to a volt.txt archive, copies the information onto a matrix and an array
+    Given a network 'net_XXX', copies the information of the volts.txt file onto a matrix and an array
     The matrix has one line for each neuron (line number = neuron_ID) and the values of the voltage of said neuron
     at each time instant on the different columns.
     The array has the time values for each voltage measure.
     Here I ask for the full path because there are multiple output files (for the diff simulation durations)
      on each network folder
     '''
-        
-    with open(file_path + '/volt_2s.txt', 'r') as file:
+
+    
+    file_path = '/home/ubuntu/BasalGanglia/NEURON-data/' + net + '/volt.txt'
+
+    with open(file_path, 'r') as file:
         volt = file.readlines()
 
     time = np.array(volt[0].split(","),float)

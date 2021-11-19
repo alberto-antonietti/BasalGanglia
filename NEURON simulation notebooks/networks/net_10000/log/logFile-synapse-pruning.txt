@@ -1,0 +1,5 @@
+Starting log file
+Using SlurmID: 2No IPYTHON_PROFILE enviroment variable set, running in serialSetting random seed: None
+Using hdf5 driver sec2, latest version
+Opening work history file: networks/net_10000/log/network-detect-worklog.hdf5
+Cleaning up old merge files
