@@ -4,6 +4,7 @@ import random
 from ipywidgets import *
 import matplotlib.pyplot as plt
 from getData import *
+import matplotlib.ticker as ticker
 
 chin_color='xkcd:orange'
 ispn_color='xkcd:blue purple'
@@ -31,7 +32,7 @@ def plotNeuronalDistribution(folder_path):
     fig.suptitle('Neuron Type Distribution', fontsize=14, fontweight='bold')
     
     ax = fig.add_subplot(1,4,1) # 2,1,1 means: 2:two rows, 1: one column, 1: first plot
-    graph_1 = df.mask(cond,'Interneurons')['neuron_type'].value_counts().plot(kind='pie',ylabel='',autopct='%1.1f%%', radius=2, colors = [dspn_color, ispn_color, 'xkcd:grey'])
+    graph_1 = df.mask(cond,'Interneurons')['neuron_type'].value_counts().plot(kind='pie', ylabel='',autopct='%1.1f%%',  textprops={'color':"w"}, radius=2, colors = [dspn_color, ispn_color, 'xkcd:grey'])
 
     ax2 = fig.add_subplot(1,4,4) # 2,1,2 means: 2:two rows, 1: one column, 1: second plot
     graph_2 = df_interneurons['neuron_type'].value_counts().plot(kind='pie', ylabel='',autopct='%1.1f%%',  textprops={'color':"w"}, radius = 2, colors = [fs_color, chin_color, lts_color])
@@ -133,13 +134,13 @@ def plotSpikes(events, id_array, raster_order, color, label, ax):
         
         index = raster_order.index(neuron_id)
         if not label_done:
-            ax.plot(spikes, np.full_like(spikes, index), ms = 3, marker=".", label=label, color=color, linestyle="None")
+            ax.plot(spikes, np.full_like(spikes, index), ms = 1, marker=".", label=label, color=color, linestyle="None")
 
             #this full_like function generates an array that has the same size as events[i], with the value index
             #on every position (so we #have the same number of x and ys for plotting)
             label_done = True
         else:
-            ax.plot(spikes, np.full_like(spikes, index), ms = 3, marker=".", color=color, linestyle="None")
+            ax.plot(spikes, np.full_like(spikes, index), ms = 1, marker=".", color=color, linestyle="None")
     return();
 
 
@@ -287,14 +288,15 @@ def plotFR(net):
     ax = fig.add_axes([0,0,1,1])
     ax.axes.xaxis.set_visible(False)
 
-    
-    plt.step(time, lts_fr, color = lts_color, linewidth=0.5)
-    plt.step(time, chin_fr, color = chin_color, linewidth=0.5)
-    plt.step(time, fs_fr, color = fs_color, linewidth=0.5)
+    plt.ylim(0, 15)
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(2))
+
+    plt.step(time, lts_fr, color = lts_color, linewidth=1)
+    plt.step(time, chin_fr, color = chin_color, linewidth=1)
+    plt.step(time, fs_fr, color = fs_color, linewidth=1)
     plt.step(time, dspn_fr, color = dspn_color, linewidth=1)
     plt.step(time, ispn_fr, color = ispn_color, linewidth=1)
     
-    ax.set_title("Firing Rates")
     ax.set_ylabel(' Firing Rate [Hz]')
 
     plt.show()
@@ -302,23 +304,29 @@ def plotFR(net):
     #------------------------------------------------------------#
     fig1 = plt.figure()
     ax1 = fig1.add_axes([0,0,1,1])
+    plt.ylim(0, 15)
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(2))
 
     plt.step(time, lts_fr, color = lts_color, linewidth=0.5)
     plt.step(time, chin_fr, color = chin_color, linewidth=0.5)
     plt.step(time, fs_fr, color = fs_color, linewidth=0.5)
     
-    ax1.set_title("Firing Rates of the Interneurons")
+    ax1.axes.xaxis.set_visible(False)
     ax1.set_xlabel('Time [s]')
     ax1.set_ylabel(' Firing Rate [Hz]')
     
     plt.show()
     
     #------------------------------------------------------------#    
+    
     fig2 = plt.figure()
     ax2 = fig2.add_axes([0,0,1,1])
+    plt.ylim(0, 10)
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(2))
     plt.step(time, dspn_fr, color = dspn_color, linewidth=1)
     plt.step(time, ispn_fr, color = ispn_color, linewidth=1)
-    ax2.set_title("Firing Rates of dSPN and iSPN")
+    
+    ax2.axes.xaxis.set_visible(False)
     ax2.set_xlabel('Time [s]')
     ax2.set_ylabel(' Firing Rate [Hz]')
     
